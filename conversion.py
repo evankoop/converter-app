@@ -24,7 +24,7 @@ def extract_enrollment_data(employee):
         enrollment_data_item = extract_element_data(enrollment)
         all_data = {**enrollment_data_item}
         enrollment_data.append(all_data)
-        
+
     return enrollment_data
 
 
@@ -105,13 +105,3 @@ def xml_to_csv(xml_file, csv_file):
         app.logger.error('Error during conversion: %s', str(e))
         raise
         
-
-
-
-"""
-current_datetime = datetime.now().strftime('%Y%m%d')
-str_current_datetime = str(current_datetime)
-xml_file_path = 'Data_API_20230809_152251_9872 (1).xml'
-csv_file_path = str_current_datetime+'employee.csv'
-xml_to_csv(xml_file_path, csv_file_path)
-"""
