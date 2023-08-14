@@ -1,0 +1,29 @@
+# Python-related
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.env
+
+# IDE-specific files
+.vscode/
+.idea/
+
+# Compiled files
+*.pyc
+*.pyo
+
+# Logs
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Uploaded files and generated content
+uploads/
+*.csv
+
+# Environment-specific files
+.env
