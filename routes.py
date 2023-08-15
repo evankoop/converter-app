@@ -1,6 +1,8 @@
 from flask import Blueprint, request, render_template, send_file, current_app, url_for, send_from_directory
 import os
 from conversion import xml_to_csv
+from dependent import d_xml_to_csv
+from company import c_xml_to_csv
 import datetime
 
 print('test')
@@ -11,15 +13,20 @@ print('After upload routes')
 
 @upload_routes.route('/', methods=['GET', 'POST'])
 def upload_file():
+    uploaded_xml_filepath = request.form.get('uploaded_xml_filepath')
     csv_generated = False
+    d_csv_generated = False
+    c_csv_generated = False
     csv_file = None
     csv_file_url = None
+    d_csv_file_url = None
+    c_csv_file_url = None
     error_message = None  # Define the error_message variable
 
     if request.method == 'POST':
         uploaded_file = request.files['file']
 
-        if uploaded_file:
+        if 'employee_data' in request.form:
             current_datetime = datetime.datetime.now().strftime('%Y-%m-%d')
             csv_filename = f'{current_datetime}_employee.csv'
             csv_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], csv_filename)
@@ -36,17 +43,56 @@ def upload_file():
                   csv_generated = True  
                   csv_file = csv_file_path  
                   csv_file_url = url_for('uploads.download_csv', filename=csv_filename)
-                  
                 
             except Exception as e:
-                # Handle the exception silently, without displaying to users
                 current_app.logger.error("Error during conversion: %s", str(e))
-
-                # Set user-friendly error message
                 csv_generated = False
                 error_message = "An error occurred during conversion. Please try again later."
 
-    return render_template('index.html', csv_generated=csv_generated, csv_file=csv_file, csv_file_url=csv_file_url, error_message=error_message)
+
+        elif 'dependent_data' in request.form:
+            current_datetime = datetime.datetime.now().strftime('%Y-%m-%d') 
+            d_csv_filename = f'{current_datetime}_dependent.csv'
+            d_csv_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], d_csv_filename) 
+            d_xml_filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            uploaded_file.save(d_xml_filepath)
+            d_csv_filepath = None
+
+            try:
+                d_csv_filepath = d_xml_to_csv(d_xml_filepath, d_csv_file_path)
+                if os.path.exists(d_csv_filepath):
+                    os.rename(d_csv_filepath, d_csv_file_path)
+                    d_csv_generated = True
+                    csv_file = d_csv_file_path
+                    d_csv_file_url = url_for('uploads.download_csv', filename=d_csv_filename)
+            
+            except Exception as e:
+                current_app.logger.error("Error during conversion: %s", str(e))
+                d_csv_generated = False
+                error_message = "An error occurred during conversion. Please try again later."
+        
+        elif 'company_data' in request.form:
+            current_datetime = datetime.datetime.now().strftime('%Y-%m-%d')
+            c_csv_filename = f'{current_datetime}_company.csv'
+            c_csv_file_path = os.path.join(current_app.config['UPLOAD_FOLDER'], c_csv_filename) 
+            c_xml_filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+            uploaded_file.save(c_xml_filepath)
+            c_csv_filepath = None
+
+            try:
+                c_csv_filepath = c_xml_to_csv(c_xml_filepath, c_csv_file_path)
+                if os.path.exists(c_csv_filepath):
+                   os.rename(c_csv_filepath, c_csv_file_path) 
+                   c_csv_generated = True
+                   csv_file = c_csv_file_path
+                   c_csv_file_url = url_for('uploads.download_csv', filename=c_csv_filename)
+
+            except Exception as e:
+                current_app.logger.error("Error during conversion: %s", str(e))
+                c_csv_generated = False
+                error_message = "An error occured during conversion. Please try again later."
+                 
+    return render_template('index.html', uploaded_xml_filepath=uploaded_xml_filepath, csv_generated=csv_generated, d_csv_generated=d_csv_generated, c_csv_generated=c_csv_generated, csv_file=csv_file, csv_file_url=csv_file_url, c_csv_file_url=c_csv_file_url, d_csv_file_url=d_csv_file_url, error_message=error_message)
 
 
 

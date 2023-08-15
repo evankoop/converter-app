@@ -79,15 +79,34 @@
     <form action="/" method="POST" enctype="multipart/form-data">
         <label for="file">Choose XML File:</label>
         <input type="file" name="file" id="file" accept=".xml" required>
+        <input type="hidden" name="uploaded_xml_filepath" value="{{ uploaded_xml_filepath }}">
+        <input type="hidden" name="employee_csv_filepath" value="{{ csv_file }}">
+        <input type="hidden" name="dependent_csv_filepath" value="{{ d_csv_file }}">
+        <input type="hidden" name="company_csv_filepath" value="{{ c_csv_file }}">
         <br>
-        <input type="submit" value="Upload">
+        <input type="submit" name="employee_data" value="Generate Employee Data CSV">
+        <br>
+        <input type="submit" name="dependent_data" value="Generate Dependent Data CSV">
+        <br>
+        <input type="submit" name="company_data" value="Generate Company Data CSV">
     </form>
 
     <div class="container">
-    {% if csv_generated %}
-    <h2>CSV File Generated:</h2>
-    <a href="{{ csv_file_url }}" download="{{ csv_filename }}">Download CSV</a>
-    {% endif %}
+        {% if csv_generated %}
+        <h2>Employee Data CSV Generated:</h2>
+        <a href="{{ csv_file_url }}" download="{{ csv_filename }}">Download Employee Data CSV</a>
+        {% endif %}
+        
+        {% if d_csv_generated %}
+        <h2>Dependent Data CSV Generated:</h2>
+        <a href="{{ d_csv_file_url }}" download="{{ d_csv_filename }}">Download Dependent Data CSV</a>
+        {% endif %}
+        
+        {% if c_csv_generated %}
+        <h2>Company Data CSV Generated:</h2>
+        <a href="{{ c_csv_file_url }}" download="{{ c_csv_filename }}">Download Company Data CSV</a>
+        {% endif %}
+        
     </div>
 </body>
 </html>
