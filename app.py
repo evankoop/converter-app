@@ -5,6 +5,7 @@ print('Starting')
 def create_app():
     app = Flask(__name__)
     app.config['UPLOAD_FOLDER'] = 'uploads'
+    app.secret_key = 'secret_key_1'
             
     from routes import upload_routes
     app.register_blueprint(upload_routes)

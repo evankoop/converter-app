@@ -13,7 +13,6 @@ print('After upload routes')
 
 @upload_routes.route('/', methods=['GET', 'POST'])
 def upload_file():
-    uploaded_xml_filepath = request.form.get('uploaded_xml_filepath')
     csv_generated = False
     d_csv_generated = False
     c_csv_generated = False
@@ -21,7 +20,7 @@ def upload_file():
     csv_file_url = None
     d_csv_file_url = None
     c_csv_file_url = None
-    error_message = None  # Define the error_message variable
+    error_message = None 
 
     if request.method == 'POST':
         uploaded_file = request.files['file']
@@ -91,8 +90,9 @@ def upload_file():
                 current_app.logger.error("Error during conversion: %s", str(e))
                 c_csv_generated = False
                 error_message = "An error occured during conversion. Please try again later."
+    
                  
-    return render_template('index.html', uploaded_xml_filepath=uploaded_xml_filepath, csv_generated=csv_generated, d_csv_generated=d_csv_generated, c_csv_generated=c_csv_generated, csv_file=csv_file, csv_file_url=csv_file_url, c_csv_file_url=c_csv_file_url, d_csv_file_url=d_csv_file_url, error_message=error_message)
+    return render_template('index.html', csv_generated=csv_generated, d_csv_generated=d_csv_generated, c_csv_generated=c_csv_generated, csv_file=csv_file, csv_file_url=csv_file_url, c_csv_file_url=c_csv_file_url, d_csv_file_url=d_csv_file_url, error_message=error_message)
 
 
 
