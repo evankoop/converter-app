@@ -75,7 +75,3 @@ def c_xml_to_csv(xml_file, csv_file):
         app.logger.error('Error during conversion: %s', str(e))
         raise
 
-
-# xml_file_path = 'Data_API_20230809_152251_9872 (1).xml'
-# csv_file_path = 'largest_companies_test.csv'
-# xml_to_csv(xml_file_path, csv_file_path)

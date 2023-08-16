@@ -68,11 +68,3 @@ def d_xml_to_csv(xml_file, csv_file):
         app.logger.error('Error during conversion: %s', str(e))
         raise
 
-# current_datetime = datetime.now().strftime('%Y%m%d')
-# str_current_datetime = str(current_datetime)
-
-
-# if __name__ == "__main__":
- #   xml_file_path = 'Data_API_20230809_152251_9872 (1).xml'
-  #  csv_file_path = str_current_datetime+'dependents.csv'
-   # dependent_xml_to_csv(xml_file_path, csv_file_path)

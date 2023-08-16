@@ -1,7 +1,6 @@
 import csv
 import xml.etree.ElementTree as ET
 import app as app
-from flask import render_template
 import os
 
 
@@ -54,8 +53,6 @@ def remove_redundant_data(all_data):
 
 def xml_to_csv(xml_file, csv_file):
     try:
-        print("xml_file:", xml_file)
-        print("csv_file:", csv_file)
         tree = ET.parse(xml_file)
         root = tree.getroot()
 

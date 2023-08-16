@@ -5,11 +5,7 @@ from dependent import d_xml_to_csv
 from company import c_xml_to_csv
 import datetime
 
-print('test')
-
 upload_routes = Blueprint('uploads', __name__)
-
-print('After upload routes')
 
 @upload_routes.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -34,11 +30,8 @@ def upload_file():
 
             try:
                 csv_filepath = xml_to_csv(xml_filepath, csv_file_path)
-                print("csv_filepath:", csv_filepath)
                 if os.path.exists(csv_filepath):
-                  print('check two')
-                  os.rename(csv_filepath, csv_file_path)
-                  print('check three')   
+                  os.rename(csv_filepath, csv_file_path)   
                   csv_generated = True  
                   csv_file = csv_file_path  
                   csv_file_url = url_for('uploads.download_csv', filename=csv_filename)
