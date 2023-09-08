@@ -9,7 +9,6 @@ def extract_element_data(element):
         data[child.tag] = child.text.strip() if child.text else ''
     return data
 
-print('extracted dependent element data')
 
 def extract_dependent_data(employee):
     dependent_data = []
@@ -18,7 +17,6 @@ def extract_dependent_data(employee):
         dependent_data.append(extract_element_data(dependent))
     return dependent_data
 
-print('extracted dependent data')
 
 def extract_enrollment_data(employee, dependent_data):
     enrollment_data = []
@@ -49,10 +47,10 @@ def d_xml_to_csv(xml_file, csv_file):
 
         for company in root.iter('Company'):
             employees = company.findall('.//Employee')
-        for employee in employees:
-            dependent_data = extract_dependent_data(employee)
-            dependent_enrollments = extract_enrollment_data(employee, dependent_data)
-            all_data.extend(dependent_enrollments)
+            for employee in employees:
+                dependent_data = extract_dependent_data(employee)
+                dependent_enrollments = extract_enrollment_data(employee, dependent_data)
+                all_data.extend(dependent_enrollments)
 
         fieldnames = set()
         for data in all_data:

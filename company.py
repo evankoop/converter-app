@@ -9,7 +9,6 @@ def extract_element_data(element):
         data[child.tag] = child.text.strip() if child.text else ''
     return data
 
-print('extracted company element data')
 
 def extract_class_data(company):
     class_data = []
