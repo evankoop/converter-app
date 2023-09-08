@@ -49,6 +49,7 @@ def upload_file():
             d_xml_filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], uploaded_file.filename)
             uploaded_file.save(d_xml_filepath)
             d_csv_filepath = None
+            print('set up dependents csv')
 
             try:
                 d_csv_filepath = d_xml_to_csv(d_xml_filepath, d_csv_file_path)

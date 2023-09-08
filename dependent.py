@@ -9,12 +9,16 @@ def extract_element_data(element):
         data[child.tag] = child.text.strip() if child.text else ''
     return data
 
+print('extracted dependent element data')
+
 def extract_dependent_data(employee):
     dependent_data = []
     dependents = employee.findall('.//Dependent')
     for dependent in dependents:
         dependent_data.append(extract_element_data(dependent))
     return dependent_data
+
+print('extracted dependent data')
 
 def extract_enrollment_data(employee, dependent_data):
     enrollment_data = []
@@ -35,6 +39,8 @@ def extract_enrollment_data(employee, dependent_data):
 
     return enrollment_data
 
+print('extracted entire enrollment data')
+
 def d_xml_to_csv(xml_file, csv_file):
     try:
         tree = ET.parse(xml_file)
@@ -44,12 +50,14 @@ def d_xml_to_csv(xml_file, csv_file):
 
         for company in root.iter('Company'):
             employees = company.findall('.//Employee')
+            print('get employees in company')
         for employee in employees:
             dependent_data = extract_dependent_data(employee)
             dependent_enrollments = extract_enrollment_data(employee, dependent_data)
             all_data.extend(dependent_enrollments)
 
         fieldnames = set()
+        print('set fieldnaes and looped through and extracted dependent data')
         for data in all_data:
             fieldnames.update(data.keys())
 
@@ -61,6 +69,7 @@ def d_xml_to_csv(xml_file, csv_file):
             writer = csv.DictWriter(csvfile, fieldnames=column_order)
             writer.writeheader()
             writer.writerows(all_data)
+            print('wrote dependent csv')
 
         return d_csv_file_path
     
