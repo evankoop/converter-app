@@ -39,7 +39,6 @@ def extract_enrollment_data(employee, dependent_data):
 
     return enrollment_data
 
-print('extracted entire enrollment data')
 
 def d_xml_to_csv(xml_file, csv_file):
     try:
@@ -50,14 +49,12 @@ def d_xml_to_csv(xml_file, csv_file):
 
         for company in root.iter('Company'):
             employees = company.findall('.//Employee')
-            print('get employees in company')
         for employee in employees:
             dependent_data = extract_dependent_data(employee)
             dependent_enrollments = extract_enrollment_data(employee, dependent_data)
             all_data.extend(dependent_enrollments)
 
         fieldnames = set()
-        print('set fieldnaes and looped through and extracted dependent data')
         for data in all_data:
             fieldnames.update(data.keys())
 
@@ -69,7 +66,6 @@ def d_xml_to_csv(xml_file, csv_file):
             writer = csv.DictWriter(csvfile, fieldnames=column_order)
             writer.writeheader()
             writer.writerows(all_data)
-            print('wrote dependent csv')
 
         return d_csv_file_path
     
