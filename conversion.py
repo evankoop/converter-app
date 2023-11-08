@@ -15,6 +15,10 @@ def extract_element_data(element):
             data[child.tag] = child.text.strip() if child.text else ''
     return data
 
+def extract_employee_data(employee):
+    employee_data = extract_element_data(employee)
+    return employee_data
+
 
 def extract_enrollment_data(employee):
     enrollment_data = []
@@ -63,7 +67,7 @@ def xml_to_csv(xml_file, csv_file):
 
             employees = company.findall('.//Employee')
             for employee in employees:
-                employee_data = extract_element_data(employee)
+                employee_data = extract_employee_data(employee)
                 employee_enrollments = extract_enrollment_data(employee)
                 voluntary_disability_data = extract_voluntary_disability_data(employee)
                 voluntary_life_data = extract_voluntary_life_data(employee)
