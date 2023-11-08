@@ -47,13 +47,6 @@ def extract_voluntary_life_data(employee):
     return voluntary_life_data
 
 
-def remove_redundant_data(all_data):
-    filtered_data = []
-    for data in all_data:
-        if 'Plan' in data:  
-            filtered_data.append(data)
-    return filtered_data
-
 
 def xml_to_csv(xml_file, csv_file):
     try:
@@ -74,6 +67,7 @@ def xml_to_csv(xml_file, csv_file):
 
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
+                    print('Employees not in employee enrollments are included')
 
                 for enrollment_data_item in employee_enrollments:
                     all_data.append({**company_data, **employee_data, **enrollment_data_item})
@@ -84,7 +78,6 @@ def xml_to_csv(xml_file, csv_file):
                 for voluntary_life_item_data in voluntary_life_data:
                     all_data.append({**employee_data, **voluntary_life_item_data})
 
-        all_data = remove_redundant_data(all_data)
 
         fieldnames = set()
         for data in all_data:
