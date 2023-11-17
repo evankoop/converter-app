@@ -67,7 +67,6 @@ def xml_to_csv(xml_file, csv_file):
 
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
-                    print('Employees not in employee enrollments are included')
 
                 for enrollment_data_item in employee_enrollments:
                     all_data.append({**company_data, **employee_data, **enrollment_data_item})
