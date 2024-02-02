@@ -93,7 +93,7 @@ def xml_to_csv(xml_file, csv_file):
                     all_data.append({**employee_data, **voluntary_life_item_data})
 
                 for hsa_item_data in hsa_data:
-                    all_data.append({**employee_enrollments, **hsa_item_data})
+                    all_data.append({**employee_data, **hsa_item_data})
 
                 for cafeteria_item_data in cafeteria_data:
                     all_data.append({**employee_data, **cafeteria_item_data})
