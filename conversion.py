@@ -46,6 +46,19 @@ def extract_voluntary_life_data(employee):
         voluntary_life_data.append(extract_element_data(item))
     return voluntary_life_data
 
+def extract_hsa_data(employee):
+    hsa_data = []
+    hsa_data_items = employee.findall('.//HSAData')
+    for item in hsa_data_items:
+        hsa_data.append(extract_element_data(item))
+    return hsa_data
+
+def extract_cafeteria_data(employee):
+    cafeteria_data = []
+    cafeteria_data_items = employee.findall('.//CafeteriaData')
+    for item in cafeteria_data_items:
+        cafeteria_data.append(extract_element_data(item))
+    return cafeteria_data
 
 
 def xml_to_csv(xml_file, csv_file):
@@ -64,6 +77,8 @@ def xml_to_csv(xml_file, csv_file):
                 employee_enrollments = extract_enrollment_data(employee)
                 voluntary_disability_data = extract_voluntary_disability_data(employee)
                 voluntary_life_data = extract_voluntary_life_data(employee)
+                hsa_data = extract_hsa_data(employee)
+                cafeteria_data = extract_cafeteria_data(employee)
 
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
@@ -76,6 +91,12 @@ def xml_to_csv(xml_file, csv_file):
 
                 for voluntary_life_item_data in voluntary_life_data:
                     all_data.append({**employee_data, **voluntary_life_item_data})
+
+                for hsa_item_data in hsa_data:
+                    all_data.append({**employee_data, **hsa_item_data})
+
+                for cafeteria_item_data in cafeteria_data:
+                    all_data.append({**employee_data, **cafeteria_item_data})
 
 
         fieldnames = set()
