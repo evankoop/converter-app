@@ -86,10 +86,11 @@ def xml_to_csv(xml_file, csv_file):
                 for enrollment in employee_enrollments:
                     # Extract enrollment data
                     enrollment_data = extract_element_data(enrollment)
+                    print('extracted enrollment_data')
 
                     combined_data = {**company_data, **employee_data, **enrollment_data}
+                    print('created combined data dict')
                     
-
                     if voluntary_disability_data:
                         combined_data.update(voluntary_disability_data[0])
                         print('extracted vol disability data')
