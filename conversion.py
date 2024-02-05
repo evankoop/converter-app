@@ -83,21 +83,26 @@ def xml_to_csv(xml_file, csv_file):
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
                 else:
-                    for enrollment_data_item in employee_enrollments:
+                    for i, enrollment_data_item in enumerate(employee_enrollments):
+                        # Start with the base combined data
                         combined_data = {**company_data, **employee_data, **enrollment_data_item}
-
-                        for voluntary_disability_item_data in voluntary_disability_data:
-                            combined_data.update(voluntary_disability_item_data)
                         
-                        for voluntary_life_item_data in voluntary_life_data:
-                            combined_data.update(voluntary_life_item_data)
-
-                        for hsa_item_data in hsa_data:
-                            combined_data.update(hsa_item_data)
-
-                        for cafeteria_item_data in cafeteria_data:
-                            combined_data.update(cafeteria_item_data)
-
+                        # Add voluntary disability data if available
+                        if i < len(voluntary_disability_data):
+                            combined_data.update(voluntary_disability_data[i])
+                            
+                        # Add voluntary life data if available
+                        if i < len(voluntary_life_data):
+                            combined_data.update(voluntary_life_data[i])
+                            
+                        # Add HSA data if available
+                        if i < len(hsa_data):
+                            combined_data.update(hsa_data[i])
+                            
+                        # Add cafeteria data if available
+                        if i < len(cafeteria_data):
+                            combined_data.update(cafeteria_data[i])
+                            
                         all_data.append(combined_data)
 
 
