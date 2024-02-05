@@ -82,31 +82,21 @@ def xml_to_csv(xml_file, csv_file):
 
                     # Find corresponding Voluntary Disability data if it exists
                     voluntary_disability_data = None
+                    voluntary_life_data = None
+                    hsa_data = None
+                    cafeteria_data = None
+
                     for element in employee_enrollments[enrollment_index + 1:]:
                         if element.tag == 'VoluntaryDisabilityData':
                             voluntary_disability_data = extract_element_data(element)
-                            break
-
-                    # Find corresponding Voluntary Life data if it exists
-                    voluntary_life_data = None
-                    for element in employee_enrollments[enrollment_index + 1:]:
-                        if element.tag == 'VoluntaryLifeData':
+                        elif element.tag == 'VoluntaryLifeData':
                             voluntary_life_data = extract_element_data(element)
-                            break
-
-                    # Find corresponding HSA data if it exists
-                    hsa_data = None
-                    for element in employee_enrollments[enrollment_index + 1:]:
-                        if element.tag == 'HSAData':
+                        elif element.tag == 'HSAData':
                             hsa_data = extract_element_data(element)
-                            break
-
-                    # Find corresponding Cafeteria data if it exists
-                    cafeteria_data = None
-                    for element in employee_enrollments[enrollment_index + 1:]:
-                        if element.tag == 'CafeteriaData':
+                        elif element.tag == 'CafeteriaData':
                             cafeteria_data = extract_element_data(element)
-                            break
+                        else:
+                            break  # Exit loop if we encounter a different type of data
 
                     if voluntary_disability_data:
                         combined_data.update(voluntary_disability_data)
