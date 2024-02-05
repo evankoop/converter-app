@@ -80,8 +80,10 @@ def xml_to_csv(xml_file, csv_file):
                 hsa_data = extract_hsa_data(employee)
                 cafeteria_data = extract_cafeteria_data(employee)
 
+                if not employee_enrollments:
+                    all_data.append({**company_data, **employee_data})
 
-                for enrollment in employee_enrollments:
+                if employee_enrollments:
                     # Extract enrollment data
 
                     combined_data = {**company_data, **employee_data}
