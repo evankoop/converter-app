@@ -88,13 +88,13 @@ def xml_to_csv(xml_file, csv_file):
 
                     for element in employee_enrollments[enrollment_index + 1:]:
                         if element.tag == 'VoluntaryDisabilityData':
-                            voluntary_disability_data = extract_element_data(element)
+                            voluntary_disability_data = extract_voluntary_disability_data(element)
                         elif element.tag == 'VoluntaryLifeData':
-                            voluntary_life_data = extract_element_data(element)
+                            voluntary_life_data = extract_voluntary_life_data(element)
                         elif element.tag == 'HSAData':
-                            hsa_data = extract_element_data(element)
+                            hsa_data = extract_hsa_data(element)
                         elif element.tag == 'CafeteriaData':
-                            cafeteria_data = extract_element_data(element)
+                            cafeteria_data = extract_cafeteria_data(element)
                         else:
                             break  # Exit loop if we encounter a different type of data
 
