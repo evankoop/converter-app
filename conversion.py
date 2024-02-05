@@ -75,39 +75,35 @@ def xml_to_csv(xml_file, csv_file):
             for employee in employees:
                 employee_data = extract_employee_data(employee)
                 employee_enrollments = extract_enrollment_data(employee)
+                voluntary_disability_data = extract_voluntary_disability_data(employee)
+                voluntary_life_data = extract_voluntary_life_data(employee)
+                hsa_data = extract_hsa_data(employee)
+                cafeteria_data = extract_cafeteria_data(employee)
 
-                for enrollment_index, enrollment in enumerate(employee_enrollments):
-                    enrollment_data = extract_element_data(enrollment)
-                    combined_data = {**company_data, **employee_data, **enrollment_data}
-
-                    # Find corresponding Voluntary Disability data if it exists
-                    voluntary_disability_data = None
-                    voluntary_life_data = None
-                    hsa_data = None
-                    cafeteria_data = None
-
-                    for element in employee_enrollments[enrollment_index + 1:]:
-                        if element.tag == 'VoluntaryDisabilityData':
-                            voluntary_disability_data = extract_voluntary_disability_data(employee)[0]  # Assuming only one item in the list
-                        elif element.tag == 'VoluntaryLifeData':
-                            voluntary_life_data = extract_voluntary_life_data(employee)[0]  # Assuming only one item in the list
-                        elif element.tag == 'HSAData':
-                            hsa_data = extract_hsa_data(employee)[0]  # Assuming only one item in the list
-                        elif element.tag == 'CafeteriaData':
-                            cafeteria_data = extract_cafeteria_data(employee)[0]  # Assuming only one item in the list
-                        else:
-                            break  # Exit loop if we encounter a different type of data
-
-                    if voluntary_disability_data:
-                        combined_data.update(voluntary_disability_data)
-                    if voluntary_life_data:
-                        combined_data.update(voluntary_life_data)
-                    if hsa_data:
-                        combined_data.update(hsa_data)
-                    if cafeteria_data:
-                        combined_data.update(cafeteria_data)
-
-                    all_data.append(combined_data)
+                if not employee_enrollments:
+                    all_data.append({**company_data, **employee_data})
+                else:
+                    for i, enrollment_data_item in enumerate(employee_enrollments):
+                        # Start with the base combined data
+                        combined_data = {**company_data, **employee_data, **enrollment_data_item}
+                        
+                        # Add voluntary disability data if available
+                        if i < len(voluntary_disability_data):
+                            combined_data.update(voluntary_disability_data[i])
+                            
+                        # Add voluntary life data if available
+                        if i < len(voluntary_life_data):
+                            combined_data.update(voluntary_life_data[i])
+                            
+                        # Add HSA data if available
+                        if i < len(hsa_data):
+                            combined_data.update(hsa_data[i])
+                            
+                        # Add cafeteria data if available
+                        if i < len(cafeteria_data):
+                            combined_data.update(cafeteria_data[i])
+                            
+                        all_data.append(combined_data)
 
         fieldnames = set()
         for data in all_data:
@@ -126,6 +122,6 @@ def xml_to_csv(xml_file, csv_file):
         return csv_file_path
 
     except Exception as e:
-        app.global_exception_handler.error('Error during conversion: %s', str(e))
+        app.logger.error('Error during conversion: %s', str(e))
         raise
         
