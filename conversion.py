@@ -75,35 +75,45 @@ def xml_to_csv(xml_file, csv_file):
             for employee in employees:
                 employee_data = extract_employee_data(employee)
                 employee_enrollments = extract_enrollment_data(employee)
-                voluntary_disability_data = extract_voluntary_disability_data(employee)
-                voluntary_life_data = extract_voluntary_life_data(employee)
-                hsa_data = extract_hsa_data(employee)
-                cafeteria_data = extract_cafeteria_data(employee)
 
-                if not employee_enrollments:
-                    all_data.append({**company_data, **employee_data})
-                else:
-                    for i, enrollment_data_item in enumerate(employee_enrollments):
-                        # Start with the base combined data
-                        combined_data = {**company_data, **employee_data, **enrollment_data_item}
-                        
-                        # Add voluntary disability data if available
-                        if i < len(voluntary_disability_data):
-                            combined_data.update(voluntary_disability_data[i])
-                            
-                        # Add voluntary life data if available
-                        if i < len(voluntary_life_data):
-                            combined_data.update(voluntary_life_data[i])
-                            
-                        # Add HSA data if available
-                        if i < len(hsa_data):
-                            combined_data.update(hsa_data[i])
-                            
-                        # Add cafeteria data if available
-                        if i < len(cafeteria_data):
-                            combined_data.update(cafeteria_data[i])
-                            
-                        all_data.append(combined_data)
+                for enrollment in employee_enrollments:
+                    enrollment_data = extract_element_data(enrollment)
+
+                    voluntary_disability_data = extract_voluntary_disability_data(enrollment)
+
+                    # Extract voluntary life data directly within the loop for each enrollment
+                    voluntary_life_data = extract_voluntary_life_data(enrollment)
+
+                    # Extract HSA data directly within the loop for each enrollment
+                    hsa_data = extract_hsa_data(enrollment)
+
+                    # Extract cafeteria data directly within the loop for each enrollment
+                    cafeteria_data = extract_cafeteria_data(enrollment)
+
+                    # Combine employee, company, and enrollment data
+                    combined_data = {**company_data, **employee_data, **enrollment_data}
+
+                    # Add voluntary disability data if available
+                    if voluntary_disability_data:
+                        for item_data in voluntary_disability_data:
+                            combined_data.update(item_data)
+
+                    # Add voluntary life data if available
+                    if voluntary_life_data:
+                        for item_data in voluntary_life_data:
+                            combined_data.update(item_data)
+
+                    # Add HSA data if available
+                    if hsa_data:
+                        for item_data in hsa_data:
+                            combined_data.update(item_data)
+
+                    # Add cafeteria data if available
+                    if cafeteria_data:
+                        for item_data in cafeteria_data:
+                            combined_data.update(item_data)
+
+                    all_data.append(combined_data)
 
 
         fieldnames = set()
