@@ -88,13 +88,13 @@ def xml_to_csv(xml_file, csv_file):
 
                     for element in employee_enrollments[enrollment_index + 1:]:
                         if element.tag == 'VoluntaryDisabilityData':
-                            voluntary_disability_data = extract_voluntary_disability_data(element)
+                            voluntary_disability_data = extract_voluntary_disability_data(employee)[0]  # Assuming only one item in the list
                         elif element.tag == 'VoluntaryLifeData':
-                            voluntary_life_data = extract_voluntary_life_data(element)
+                            voluntary_life_data = extract_voluntary_life_data(employee)[0]  # Assuming only one item in the list
                         elif element.tag == 'HSAData':
-                            hsa_data = extract_hsa_data(element)
+                            hsa_data = extract_hsa_data(employee)[0]  # Assuming only one item in the list
                         elif element.tag == 'CafeteriaData':
-                            cafeteria_data = extract_cafeteria_data(element)
+                            cafeteria_data = extract_cafeteria_data(employee)[0]  # Assuming only one item in the list
                         else:
                             break  # Exit loop if we encounter a different type of data
 
@@ -109,7 +109,6 @@ def xml_to_csv(xml_file, csv_file):
 
                     all_data.append(combined_data)
 
-
         fieldnames = set()
         for data in all_data:
             fieldnames.update(data.keys())
@@ -123,10 +122,10 @@ def xml_to_csv(xml_file, csv_file):
             writer.writeheader()
             writer.writerows(all_data)
             print('wrote csv file')
-        
+
         return csv_file_path
 
     except Exception as e:
-        app.logger.error('Error during conversion: %s', str(e))
+        app.global_exception_handler.error('Error during conversion: %s', str(e))
         raise
         
