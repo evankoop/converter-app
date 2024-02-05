@@ -82,26 +82,26 @@ def xml_to_csv(xml_file, csv_file):
 
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
+                else:
+                    for enrollment_data_item in employee_enrollments:
 
-                for enrollment in employee_enrollments:
-                    enrollment_data = extract_enrollment_data(enrollment)
-                    # Extract enrollment data
+                        # Extract enrollment data
 
-                    combined_data = {**company_data, **employee_data, **enrollment_data}
-                    
-                    if voluntary_disability_data:
-                        combined_data.update(voluntary_disability_data[0])
+                        combined_data = {**company_data, **employee_data, **enrollment_data_item}
+                        
+                        if voluntary_disability_data:
+                            combined_data.update(voluntary_disability_data[0])
 
-                    if voluntary_life_data:
-                        combined_data.update(voluntary_life_data[0])
+                        if voluntary_life_data:
+                            combined_data.update(voluntary_life_data[0])
 
-                    if hsa_data:
-                        combined_data.update(hsa_data[0])
+                        if hsa_data:
+                            combined_data.update(hsa_data[0])
 
-                    if cafeteria_data:
-                        combined_data.update(cafeteria_data[0])
+                        if cafeteria_data:
+                            combined_data.update(cafeteria_data[0])
 
-                    all_data.append(combined_data)
+                        all_data.append(combined_data)
 
         fieldnames = set()
         for data in all_data:
