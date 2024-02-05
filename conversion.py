@@ -76,42 +76,46 @@ def xml_to_csv(xml_file, csv_file):
                 employee_data = extract_employee_data(employee)
                 employee_enrollments = extract_enrollment_data(employee)
 
-                for enrollment in employee_enrollments:
+                for enrollment_index, enrollment in enumerate(employee_enrollments):
                     enrollment_data = extract_element_data(enrollment)
-
-                    voluntary_disability_data = extract_voluntary_disability_data(enrollment)
-
-                    # Extract voluntary life data directly within the loop for each enrollment
-                    voluntary_life_data = extract_voluntary_life_data(enrollment)
-
-                    # Extract HSA data directly within the loop for each enrollment
-                    hsa_data = extract_hsa_data(enrollment)
-
-                    # Extract cafeteria data directly within the loop for each enrollment
-                    cafeteria_data = extract_cafeteria_data(enrollment)
-
-                    # Combine employee, company, and enrollment data
                     combined_data = {**company_data, **employee_data, **enrollment_data}
 
-                    # Add voluntary disability data if available
+                    # Find corresponding Voluntary Disability data if it exists
+                    voluntary_disability_data = None
+                    for element in employee_enrollments[enrollment_index + 1:]:
+                        if element.tag == 'VoluntaryDisabilityData':
+                            voluntary_disability_data = extract_element_data(element)
+                            break
+
+                    # Find corresponding Voluntary Life data if it exists
+                    voluntary_life_data = None
+                    for element in employee_enrollments[enrollment_index + 1:]:
+                        if element.tag == 'VoluntaryLifeData':
+                            voluntary_life_data = extract_element_data(element)
+                            break
+
+                    # Find corresponding HSA data if it exists
+                    hsa_data = None
+                    for element in employee_enrollments[enrollment_index + 1:]:
+                        if element.tag == 'HSAData':
+                            hsa_data = extract_element_data(element)
+                            break
+
+                    # Find corresponding Cafeteria data if it exists
+                    cafeteria_data = None
+                    for element in employee_enrollments[enrollment_index + 1:]:
+                        if element.tag == 'CafeteriaData':
+                            cafeteria_data = extract_element_data(element)
+                            break
+
                     if voluntary_disability_data:
-                        for item_data in voluntary_disability_data:
-                            combined_data.update(item_data)
-
-                    # Add voluntary life data if available
+                        combined_data.update(voluntary_disability_data)
                     if voluntary_life_data:
-                        for item_data in voluntary_life_data:
-                            combined_data.update(item_data)
-
-                    # Add HSA data if available
+                        combined_data.update(voluntary_life_data)
                     if hsa_data:
-                        for item_data in hsa_data:
-                            combined_data.update(item_data)
-
-                    # Add cafeteria data if available
+                        combined_data.update(hsa_data)
                     if cafeteria_data:
-                        for item_data in cafeteria_data:
-                            combined_data.update(item_data)
+                        combined_data.update(cafeteria_data)
 
                     all_data.append(combined_data)
 
