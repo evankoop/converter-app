@@ -79,37 +79,29 @@ def xml_to_csv(xml_file, csv_file):
                 voluntary_disability_data = extract_voluntary_disability_data(employee)
                 voluntary_life_data = extract_voluntary_life_data(employee)
                 hsa_data = extract_hsa_data(employee)
+                cafeteria_data = extract_cafeteria_data(employee)
                 print('extracted employee enrollment data')
 
 
                 for enrollment in employee_enrollments:
                     # Extract enrollment data
                     enrollment_data = extract_element_data(enrollment)
+
+                    combined_data = {**company_data, **employee_data, **enrollment_data}
                     
 
-                    # Extract Voluntary Disability data within the loop for each enrollment
                     if voluntary_disability_data:
-                        vol_disability_data = voluntary_disability_data.pop(0)
+                        combined_data.update(voluntary_disability_data[0])
                         print('extracted vol disability data')
 
-                    else:
-                        vol_disability_data = {}
-
-                    # Extract Voluntary Life data within the loop for each enrollment
                     if voluntary_life_data:
-                        vol_life_data = voluntary_life_data.pop(0)
-                    else:
-                        vol_life_data = {}
+                        combined_data.update(voluntary_life_data[0])
 
-                    # Extract HSA data within the loop for each enrollment
                     if hsa_data:
-                        hsa_data_item = hsa_data.pop(0)
-                    else:
-                        hsa_data_item = {}
+                        combined_data.update(hsa_data[0])
 
-                    # Combine employee, company, and enrollment data
-                    combined_data = {**company_data, **employee_data, **enrollment_data,
-                                     **vol_disability_data, **vol_life_data, **hsa_data_item}
+                    if cafeteria_data:
+                        combined_data.update(cafeteria_data[0])
 
                     all_data.append(combined_data)
 
