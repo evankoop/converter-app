@@ -70,7 +70,6 @@ def xml_to_csv(xml_file, csv_file):
 
         for company in root.iter('Company'):
             company_data = extract_element_data(company)
-            print('extracted company data')
 
             employees = company.findall('.//Employee')
             for employee in employees:
@@ -80,18 +79,15 @@ def xml_to_csv(xml_file, csv_file):
                 voluntary_life_data = extract_voluntary_life_data(employee)
                 hsa_data = extract_hsa_data(employee)
                 cafeteria_data = extract_cafeteria_data(employee)
-                print('extracted employee enrollment data')
 
 
                 for enrollment in employee_enrollments:
                     # Extract enrollment data
 
                     combined_data = {**company_data, **employee_data}
-                    print('created combined data dict')
                     
                     if voluntary_disability_data:
                         combined_data.update(voluntary_disability_data[0])
-                        print('extracted vol disability data')
 
                     if voluntary_life_data:
                         combined_data.update(voluntary_life_data[0])
