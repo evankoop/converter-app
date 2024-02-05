@@ -83,10 +83,11 @@ def xml_to_csv(xml_file, csv_file):
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
 
-                if employee_enrollments:
+                for enrollment in employee_enrollments:
+                    enrollment_data = extract_enrollment_data(enrollment)
                     # Extract enrollment data
 
-                    combined_data = {**company_data, **employee_data}
+                    combined_data = {**company_data, **employee_data, **enrollment_data}
                     
                     if voluntary_disability_data:
                         combined_data.update(voluntary_disability_data[0])
