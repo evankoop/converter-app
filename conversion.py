@@ -85,8 +85,6 @@ def xml_to_csv(xml_file, csv_file):
                 else:
                     for enrollment_data_item in employee_enrollments:
 
-                        # Extract enrollment data
-
                         combined_data = {**company_data, **employee_data, **enrollment_data_item}
                         
                         if voluntary_disability_data:
@@ -95,7 +93,7 @@ def xml_to_csv(xml_file, csv_file):
                         if voluntary_life_data:
                             combined_data.update(voluntary_life_data[0])
 
-                        if hsa_data:
+                        if hsa_data and enrollment_data_item.get('Benefit') == 'Consumer Directed Health':
                             combined_data.update(hsa_data[0])
 
                         if cafeteria_data:
