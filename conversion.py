@@ -13,6 +13,7 @@ def extract_element_data(element):
             data[child.tag].append(child.text.strip() if child.text else '')
         else:
             data[child.tag] = child.text.strip() if child.text else ''
+        data.update(extract_element_data(child))
     return data
 
 def extract_employee_data(employee):
