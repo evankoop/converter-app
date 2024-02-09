@@ -96,14 +96,6 @@ def xml_to_csv(xml_file, csv_file):
                         benefit = enrollment_data_item.get('Benefit')
                         
                         if voluntary_disability_data and benefit in voluntary_disability_benefits:
-                            if benefit == 'Voluntary Short-Term Disability':
-                                combined_data.update(voluntary_disability_data[0])
-                            elif benefit == 'Voluntary Long-Term Disability':
-                                combined_data.update(voluntary_disability_data[0])
-                            elif benefit == 'Short-Term Disability':
-                                combined_data.update(voluntary_disability_data[0])
-                            elif benefit == 'Long-Term Disability':
-                                combined_data.update(voluntary_disability_data[0])
                             combined_data.update(voluntary_disability_data[0])
 
                         if voluntary_life_data and enrollment_data_item.get('Benefit') in voluntary_life_benefits:
