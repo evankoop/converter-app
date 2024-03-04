@@ -107,13 +107,7 @@ def xml_to_csv(xml_file, csv_file):
 
         column_order = sorted(fieldnames)
 
-        columns_to_remove = ['Addresses', 'AggregateLastModified', 'Beneficiaries', 'BusinessUnits', 'CafeteriaData', 'CarrierBenefitDescription', 'Classes', 'CobraEnrollments', 'Contacts',
-                             'Departments', 'DependentEnrollees', 'Dependents', 'Disabled', 'DisabledEndDate', 'DisabledStartDate', 'Divisions', 'EmployeeMapping','Employees', 'EnrollmentMapping',
-                             'Enrollments', 'FutureSalaries', 'HSAData', 'MaintenanceCodeDate', 'MedicalEnrollees', 'Offices', 'PCPEffectiveDate', 'PayrollGroups',  'PlanMapping', 'Plans',
-                             'PrimaryCarePhysicianData', 'Riders', 'SubscriptionEffectiveDate', 'VoluntaryDisabilityData', 'VoluntaryDisabilityStackedPolicies', 'VoluntaryLifeData',
-                             'VoluntaryLifeStackedPolicies']
-        
-        column_order = [col for col in column_order if col not in columns_to_remove]
+        print('removed blank columns')
 
         csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
 
