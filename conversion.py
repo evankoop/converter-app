@@ -80,24 +80,32 @@ def xml_to_csv(xml_file, csv_file):
                 hsa_data = extract_hsa_data(employee)
                 cafeteria_data = extract_cafeteria_data(employee)
 
+                voluntary_disability_benefits = ['Voluntary Short-Term Disability', 'Voluntary Long-Term Disability', 'Short-Term Disability', 'Long-Term Disability']
+
+                voluntary_life_benefits = ['Voluntary AD&D', 'Voluntary Life', 'Life', 'AD&D', 'Critical Illness']
+
+                cafeteria_benefits = ['Flexible Spending Account', 'Dependent Care Spending Account', 'Limited Purpose FSA']
+
                 if not employee_enrollments:
                     all_data.append({**company_data, **employee_data})
                 else:
                     for enrollment_data_item in employee_enrollments:
 
                         combined_data = {**company_data, **employee_data, **enrollment_data_item}
-                        
-                        for voluntary_disability_item_data in voluntary_disability_data:
-                            combined_data.update(voluntary_disability_item_data)
 
-                        for voluntary_life_item_data in voluntary_life_data:
-                            combined_data.update(voluntary_life_item_data)
+                        benefit = enrollment_data_item.get('Benefit')
+                        
+                        if voluntary_disability_data and benefit in voluntary_disability_benefits:
+                            combined_data.update(voluntary_disability_data[0])
+
+                        if voluntary_life_data and enrollment_data_item.get('Benefit') in voluntary_life_benefits:
+                            combined_data.update(voluntary_life_data[0])
 
                         if hsa_data and enrollment_data_item.get('Benefit') == 'Consumer Directed Health':
                             combined_data.update(hsa_data[0])
 
-                        for cafeteria_item_data in cafeteria_data:
-                            combined_data.update(cafeteria_item_data)
+                        if cafeteria_data and enrollment_data_item.get('Benefit') in cafeteria_benefits:
+                            combined_data.update(cafeteria_data[0])
 
                         all_data.append(combined_data)
 
@@ -106,8 +114,6 @@ def xml_to_csv(xml_file, csv_file):
             fieldnames.update(data.keys())
 
         column_order = sorted(fieldnames)
-
-        print('removed blank columns')
 
         csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
 
@@ -118,6 +124,7 @@ def xml_to_csv(xml_file, csv_file):
             print('wrote csv file')
 
         return csv_file_path
+
 
     except Exception as e:
         app.logger.error('Error during conversion: %s', str(e))
