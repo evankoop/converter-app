@@ -60,6 +60,19 @@ def extract_cafeteria_data(employee):
         cafeteria_data.append(extract_element_data(item))
     return cafeteria_data
 
+def extract_phone(employee):
+    phone = []
+    phone_items = employee.findall('.//Phones')
+    for item in phone_items:
+        phone.append(extract_element_data(item))
+    return phone
+
+def extract_email(employee):
+    email = []
+    email_items = employee.findall('.//EmailAddresses')
+    for item in email_items:
+        email.append(extract_element_data(item))
+    return email
 
 def xml_to_csv(xml_file, csv_file):
     try:
@@ -79,6 +92,8 @@ def xml_to_csv(xml_file, csv_file):
                 voluntary_life_data = extract_voluntary_life_data(employee)
                 hsa_data = extract_hsa_data(employee)
                 cafeteria_data = extract_cafeteria_data(employee)
+                phone_data = extract_phone(employee)
+                email_data = extract_email(employee)
 
                 voluntary_disability_benefits = ['Voluntary Short-Term Disability', 'Voluntary Long-Term Disability', 'Short-Term Disability', 'Long-Term Disability']
 
@@ -106,6 +121,10 @@ def xml_to_csv(xml_file, csv_file):
 
                         if cafeteria_data and enrollment_data_item.get('Benefit') in cafeteria_benefits:
                             combined_data.update(cafeteria_data[0])
+                        
+                        combined_data.update(phone_data[0])
+
+                        combined_data.update(email_data[0])
 
                         all_data.append(combined_data)
 
