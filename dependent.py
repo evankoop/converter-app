@@ -17,7 +17,6 @@ def extract_dependent_data(employee):
         dependent_data.append(extract_element_data(dependent))
     return dependent_data
 
-
 def extract_enrollment_data(employee, dependent_data):
     enrollment_data = []
     enrollments = employee.findall('.//Enrollments/Enrollment')
