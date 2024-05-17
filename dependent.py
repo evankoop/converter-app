@@ -32,7 +32,7 @@ def extract_enrollment_data(employee, dependent_data):
                 all_data['SSN_Dependent'] = dependent.get('SSN', '')
                 all_data['Relationship'] = dependent.get('Relationship', '')
                 all_data['SSN_Employee'] = employee.findtext('.//SSN')
-                all_data['CompanyIdentifier'] = employee.findtext('.//CompanyIdentifier')
+                all_data['Identifier'] = employee.findtext('.//CompanyIdentifier')
                 enrollment_data.append(all_data)
 
     return enrollment_data
