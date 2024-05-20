@@ -86,8 +86,6 @@ def xml_to_csv(xml_file, csv_file):
                 phone_data = extract_phone(employee)
                 email_data = extract_email(employee)
 
-                voluntary_disability_benefits = ['Voluntary Short-Term Disability', 'Voluntary Long-Term Disability', 'Short-Term Disability', 'Long-Term Disability']
-
                 voluntary_life_benefits = ['Voluntary AD&D', 'Voluntary Life', 'Life', 'AD&D', 'Critical Illness']
 
                 cafeteria_benefits = ['Flexible Spending Account', 'Dependent Care Spending Account', 'Limited Purpose FSA']
