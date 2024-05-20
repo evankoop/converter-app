@@ -99,8 +99,6 @@ def xml_to_csv(xml_file, csv_file):
 
                         combined_data = {**company_data, **employee_data, **enrollment_data_item}
 
-                        benefit = enrollment_data_item.get('Benefit')
-
                         if voluntary_life_data and enrollment_data_item.get('Benefit') in voluntary_life_benefits:
                             combined_data.update(voluntary_life_data[0])
 
