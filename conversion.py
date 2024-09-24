@@ -2,134 +2,98 @@ import csv
 import xml.etree.ElementTree as ET
 import app as app
 import os
+import logging
+
+logging.basicConfig(level=logging.ERROR)
 
 
-def extract_element_data(element):
-    data = {}
+def extract_element_data(element, data=None, excluded_tags=None):
+    if data is None:
+        data = {}
+    
+    if excluded_tags is None:
+        excluded_tags = set()
+    
+    current_data = {}
+
     for child in element:
-        if child.tag in data:
-            if not isinstance(data[child.tag], list):
-                data[child.tag] = [data[child.tag]]
-            data[child.tag].append(child.text.strip() if child.text else '')
+        if child.tag in excluded_tags:
+            continue
+        if len(child) > 0:
+            child_rows = extract_element_data(child, excluded_tags=excluded_tags)
+            if child_rows:
+                expanded_rows = []
+                for row in child_rows:
+                    expanded_row = {**data, **current_data, **row}
+                    expanded_rows.append(expanded_row)
+                return expanded_rows
         else:
-            data[child.tag] = child.text.strip() if child.text else ''
-    return data
+            current_data[child.tag] = child.text.strip() if child.text else ''
+    if current_data:
+        return [{**data, **current_data}]
+    else:
+        return []
 
-def extract_employee_data(employee):
-    employee_data = extract_element_data(employee)
-    return employee_data
+def process_company(company):
+    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans'})
 
+    employees = company.findall('.//Employee')
 
-def extract_enrollment_data(employee):
-    enrollment_data = []
-    enrollments = employee.findall('.//Enrollments/Enrollment')
-    for enrollment in enrollments:
-        enrollment_data_item = extract_element_data(enrollment)
-        all_data = {**enrollment_data_item}
-        enrollment_data.append(all_data)
+    rows = []
 
-    return enrollment_data
+    for employee in employees:
+        employee_data = extract_element_data(employee, excluded_tags={'Beneficiary'})
 
+        enrollments = employee.findall('.//Enrollments/Enrollment')
 
-def extract_voluntary_life_data(employee):
-    voluntary_life_data = []
-    voluntary_life_items = employee.findall('.//VoluntaryLifeData')
-    for item in voluntary_life_items:
-        voluntary_life_data.append(extract_element_data(item))
-    return voluntary_life_data
+        if not enrollments:
+            for row in employee_data:
+                rows.append({**company_data[0], **row})
+        else:
+            for enrollment in enrollments:
+                enrollment_data = extract_element_data(enrollment, excluded_tags={'Beneficiary'})
 
-def extract_hsa_data(employee):
-    hsa_data = []
-    hsa_data_items = employee.findall('.//HSAData')
-    for item in hsa_data_items:
-        hsa_data.append(extract_element_data(item))
-    return hsa_data
+                for emp_row in employee_data:
+                    for enroll_row in enrollment_data:
+                        combined_data = {**company_data[0], **emp_row, **enroll_row}
+                        rows.append(combined_data)
+    return rows
 
-def extract_cafeteria_data(employee):
-    cafeteria_data = []
-    cafeteria_data_items = employee.findall('.//CafeteriaData')
-    for item in cafeteria_data_items:
-        cafeteria_data.append(extract_element_data(item))
-    return cafeteria_data
+def process_xml(xml_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    all_rows = []
 
-def extract_phone(employee):
-    phone = []
-    phone_items = employee.findall('.//Phones')
-    for item in phone_items:
-        phone.append(extract_element_data(item))
-    return phone
+    for company in root.findall('.//Company'):
+        company_rows = process_company(company)
+        all_rows.extend(company_rows)
+    return all_rows
 
-def extract_email(employee):
-    email = []
-    email_items = employee.findall('.//EmailAddresses')
-    for item in email_items:
-        email.append(extract_element_data(item))
-    return email
+def write_to_csv(data, csv_file):
+    fieldnames = set()
+    
+    for row in data:
+        fieldnames.update(row.keys())
+    
+    column_order = sorted(fieldnames)
+
+    csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
+    print('Os Path: ', os.path)
+
+    with open(csv_file_path, 'w', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=column_order)
+        writer.writeheader()
+        writer.writerows(data)
+    
+    return csv_file_path
 
 def xml_to_csv(xml_file, csv_file):
     try:
-        tree = ET.parse(xml_file)
-        root = tree.getroot()
+        data = process_xml(xml_file)
+        write_to_csv(data, csv_file)
 
-        all_data = []
-
-        for company in root.iter('Company'):
-            company_data = extract_element_data(company)
-
-            employees = company.findall('.//Employee')
-            for employee in employees:
-                employee_data = extract_employee_data(employee)
-                employee_enrollments = extract_enrollment_data(employee)
-                voluntary_life_data = extract_voluntary_life_data(employee)
-                hsa_data = extract_hsa_data(employee)
-                cafeteria_data = extract_cafeteria_data(employee)
-                phone_data = extract_phone(employee)
-                email_data = extract_email(employee)
-
-                voluntary_life_benefits = ['Voluntary AD&D', 'Voluntary Life', 'Life', 'AD&D', 'Critical Illness']
-
-                cafeteria_benefits = ['Flexible Spending Account', 'Dependent Care Spending Account', 'Limited Purpose FSA']
-
-                if not employee_enrollments:
-                    all_data.append({**company_data, **employee_data})
-                else:
-                    for enrollment_data_item in employee_enrollments:
-
-                        combined_data = {**company_data, **employee_data, **enrollment_data_item}
-
-                        if voluntary_life_data and enrollment_data_item.get('Benefit') in voluntary_life_benefits:
-                            combined_data.update(voluntary_life_data[0])
-
-                        if hsa_data and enrollment_data_item.get('Benefit') == 'Consumer Directed Health':
-                            combined_data.update(hsa_data[0])
-
-                        if cafeteria_data and enrollment_data_item.get('Benefit') in cafeteria_benefits:
-                            combined_data.update(cafeteria_data[0])
-
-                        combined_data.update(phone_data[0])
-
-                        combined_data.update(email_data[0])
-
-                        all_data.append(combined_data)
-
-        fieldnames = set()
-        for data in all_data:
-            fieldnames.update(data.keys())
-
-        column_order = sorted(fieldnames)
-
-        csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
-
-        with open(csv_file_path, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=column_order)
-            writer.writeheader()
-            writer.writerows(all_data)
-            print('wrote csv file')
-
-        return csv_file_path
-
+        print('wrote to csv')
 
     except Exception as e:
-        app.logger.error('Error during conversion: %s', str(e))
+        logging.error('Error during conversion: %s', str(e))
         raise
-        

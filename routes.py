@@ -29,9 +29,8 @@ def upload_file():
             uploaded_file.save(xml_filepath)
 
             try:
-                csv_filepath = xml_to_csv(xml_filepath, csv_file_path)
-                if os.path.exists(csv_filepath):
-                  os.rename(csv_filepath, csv_file_path)   
+                xml_to_csv(xml_filepath, csv_file_path)
+                if os.path.exists(csv_file_path): 
                   csv_generated = True  
                   csv_file = csv_file_path  
                   csv_file_url = url_for('uploads.download_csv', filename=csv_filename)

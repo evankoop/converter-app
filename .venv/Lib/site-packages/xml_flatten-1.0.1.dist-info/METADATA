@@ -1,0 +1,236 @@
+Metadata-Version: 2.1
+Name: xml-flatten
+Version: 1.0.1
+Summary: This is a package to flatten a nested xml data file.
+Home-page: UNKNOWN
+Author: Joy Maitra
+License: MIT
+Platform: UNKNOWN
+Description-Content-Type: text/markdown
+
+# Description
+This package accepts a nested xml as input parameter and provides a flatten structure as output. The output data is a list, which has xpath of all the data points from the xml.
+
+# Installation
+
+```
+pip install xml-flatten
+```
+
+
+# Usage example
+
+  * ## xml file : nested_xml_sample.xml
+
+```
+<?xml version="1.0"?>
+<?xml-stylesheet href="catalog.xsl" type="text/xsl"?>
+<!DOCTYPE catalog SYSTEM "catalog.dtd">
+<catalog>
+   <product description="Cardigan Sweater" product_image="cardigan.jpg">
+      <catalog_item gender="Men's">
+         <item_number>QWZ5671</item_number>
+         <price>39.95</price>
+         <size description="Medium">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+         </size>
+         <size description="Large">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+         </size>
+		 <Manufacturer description="raw">
+			<name>M1</name>
+			<address>
+				<line1>jsdf</line1>
+				<line2>sdfgdhh</line2>
+					<child6>dfgdfg</child6>
+						<child7>fdghfyuk</child7>
+							<child8>
+								<child9>fdghfyuk</child9>
+								<child91>fdghfyuk</child91>
+							</child8>
+				<pin>23423</pin>
+			</address>
+		 </Manufacturer>
+      </catalog_item>
+      <catalog_item gender="Women's">
+         <item_number>RRX9856</item_number>
+         <price>42.50</price>
+         <size description="Small">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="navy_cardigan.jpg">Navy</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+         </size>
+         <size description="Medium">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="navy_cardigan.jpg">Navy</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+         <size description="Large">
+            <color_swatch image="navy_cardigan.jpg">Navy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+         <size description="Extra Large">
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+      </catalog_item>
+   </product>
+   <product description="Formal Shirt" product_image="FormalShirt.jpg">
+      <catalog_item gender="Men's">
+         <item_number>QWZ5671</item_number>
+         <price>49.95</price>
+         <size description="Large">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+         </size>
+         <size description="XLarge">
+            <color_swatch image="red_cardigan.jpg">Blue</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Black</color_swatch>
+         </size>
+      </catalog_item>
+      <catalog_item gender="Women's">
+         <item_number>RRX9856</item_number>
+         <price>40.50</price>
+         <size description="Medium">
+            <color_swatch image="red_cardigan.jpg">Red</color_swatch>
+            <color_swatch image="navy_cardigan.jpg">Navy</color_swatch>
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+         <size description="Large">
+            <color_swatch image="navy_cardigan.jpg">Navy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+         <size description="Extra Large">
+            <color_swatch image="burgundy_cardigan.jpg">Burgundy</color_swatch>
+            <color_swatch image="black_cardigan.jpg">Black</color_swatch>
+         </size>
+      </catalog_item>
+   </product>
+</catalog>
+```
+
+  * ## flatten_xml.py
+```
+from xml.etree import ElementTree
+from xml_flatten import xml_flatten
+
+tree = ElementTree.parse("./nested_xml_sample.xml")
+root = tree.getroot()
+
+for i in root:
+    res=xml_flatten.rec(i,1,"root")
+    for i in  xml_flatten.xml_flat:
+        print(i)
+```
+
+  * ## output
+
+```
+['root', {'product': '      '}, {'description': 'Cardigan Sweater', 'product_image': 'cardigan.jpg'}]
+['root>product', {'catalog_item': '         '}, {'gender': "Men's"}]
+['root>product>catalog_item', {'item_number': 'QWZ5671'}, '']
+['root>product>catalog_item', {'price': '39.95'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Medium'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'Manufacturer': ''}, {'description': 'raw'}]
+['root>product>catalog_item>Manufacturer', {'name': 'M1'}, '']
+['root>product>catalog_item>Manufacturer', {'address': ''}, '']
+['root>product>catalog_item>Manufacturer>address', {'line1': 'jsdf'}, '']
+['root>product>catalog_item>Manufacturer>address', {'line2': 'sdfgdhh'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child6': 'dfgdfg'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child7': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child8': ''}, '']
+['root>product>catalog_item>Manufacturer>address>child8', {'child9': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address>child8', {'child91': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address', {'pin': '23423'}, '']
+['root>product', {'catalog_item': '         '}, {'gender': "Women's"}]
+['root>product>catalog_item', {'item_number': 'RRX9856'}, '']
+['root>product>catalog_item', {'price': '42.50'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Small'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Medium'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Extra Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root', {'product': '      '}, {'description': 'Cardigan Sweater', 'product_image': 'cardigan.jpg'}]
+['root>product', {'catalog_item': '         '}, {'gender': "Men's"}]
+['root>product>catalog_item', {'item_number': 'QWZ5671'}, '']
+['root>product>catalog_item', {'price': '39.95'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Medium'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'Manufacturer': ''}, {'description': 'raw'}]
+['root>product>catalog_item>Manufacturer', {'name': 'M1'}, '']
+['root>product>catalog_item>Manufacturer', {'address': ''}, '']
+['root>product>catalog_item>Manufacturer>address', {'line1': 'jsdf'}, '']
+['root>product>catalog_item>Manufacturer>address', {'line2': 'sdfgdhh'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child6': 'dfgdfg'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child7': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address', {'child8': ''}, '']
+['root>product>catalog_item>Manufacturer>address>child8', {'child9': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address>child8', {'child91': 'fdghfyuk'}, '']
+['root>product>catalog_item>Manufacturer>address', {'pin': '23423'}, '']
+['root>product', {'catalog_item': '         '}, {'gender': "Women's"}]
+['root>product>catalog_item', {'item_number': 'RRX9856'}, '']
+['root>product>catalog_item', {'price': '42.50'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Small'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Medium'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Extra Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root', {'product': '      '}, {'description': 'Formal Shirt', 'product_image': 'FormalShirt.jpg'}]
+['root>product', {'catalog_item': '         '}, {'gender': "Men's"}]
+['root>product>catalog_item', {'item_number': 'QWZ5671'}, '']
+['root>product>catalog_item', {'price': '49.95'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'XLarge'}]
+['root>product>catalog_item>size', {'color_swatch': 'Blue'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product', {'catalog_item': '         '}, {'gender': "Women's"}]
+['root>product>catalog_item', {'item_number': 'RRX9856'}, '']
+['root>product>catalog_item', {'price': '40.50'}, '']
+['root>product>catalog_item', {'size': '            '}, {'description': 'Medium'}]
+['root>product>catalog_item>size', {'color_swatch': 'Red'}, {'image': 'red_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Navy'}, {'image': 'navy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+['root>product>catalog_item', {'size': '            '}, {'description': 'Extra Large'}]
+['root>product>catalog_item>size', {'color_swatch': 'Burgundy'}, {'image': 'burgundy_cardigan.jpg'}]
+['root>product>catalog_item>size', {'color_swatch': 'Black'}, {'image': 'black_cardigan.jpg'}]
+```
+
