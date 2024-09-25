@@ -33,6 +33,21 @@ def extract_element_data(element, data=None, excluded_tags=None):
         return [{**data, **current_data}]
     else:
         return []
+    
+def extract_contact_info(element):
+    contact_data = {}
+
+    email_addresses = element.find('.//EmailAddresses')
+    if email_addresses:
+        for email in email_addresses:
+            contact_data[email.tag] = email.text.strip() if email.text else ''
+    
+    phones = element.find('.//Phones')
+    if phones:
+        for phone in phones:
+            contact_data[phone.tag] = phone.text.strip() if phone.text else ''
+    
+    return contact_data
 
 def process_company(company):
     company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans'})
@@ -44,18 +59,20 @@ def process_company(company):
     for employee in employees:
         employee_data = extract_element_data(employee, excluded_tags={'Beneficiary'})
 
+        contact_info = extract_contact_info(employee)
+
         enrollments = employee.findall('.//Enrollments/Enrollment')
 
         if not enrollments:
             for row in employee_data:
-                rows.append({**company_data[0], **row})
+                rows.append({**company_data[0], **row, **contact_info})
         else:
             for enrollment in enrollments:
                 enrollment_data = extract_element_data(enrollment, excluded_tags={'Beneficiary'})
 
                 for emp_row in employee_data:
                     for enroll_row in enrollment_data:
-                        combined_data = {**company_data[0], **emp_row, **enroll_row}
+                        combined_data = {**company_data[0], **emp_row, **enroll_row, **contact_info}
                         rows.append(combined_data)
     return rows
 
@@ -78,7 +95,6 @@ def write_to_csv(data, csv_file):
     column_order = sorted(fieldnames)
 
     csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
-    print('Os Path: ', os.path)
 
     with open(csv_file_path, 'w', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=column_order)
