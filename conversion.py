@@ -50,7 +50,7 @@ def extract_contact_info(element):
     return contact_data
 
 def process_company(company):
-    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans'})
+    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications'})
 
     employees = company.findall('.//Employee')
 
