@@ -50,6 +50,15 @@ def extract_contact_info(element):
     return contact_data
 
 def process_company(company):
+    default_emp_data = {
+        'BusinessUnit':'',
+        'Class':'',
+        'Department':'',
+        'Division':'',
+        'Office':'',
+        'TerminatedOn':'',
+        'TerminationReason':''
+    }
     company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications'})
 
     employees = company.findall('.//Employee')
@@ -57,6 +66,8 @@ def process_company(company):
     rows = []
 
     for employee in employees:
+        current_emp_data = default_emp_data.copy()
+
         employee_data = extract_element_data(employee, excluded_tags={'Beneficiary'})
 
         contact_info = extract_contact_info(employee)
@@ -65,14 +76,14 @@ def process_company(company):
 
         if not enrollments:
             for row in employee_data:
-                rows.append({**company_data[0], **row, **contact_info})
+                rows.append({**company_data[0], **current_emp_data, **row, **contact_info})
         else:
             for enrollment in enrollments:
                 enrollment_data = extract_element_data(enrollment, excluded_tags={'Beneficiary'})
 
                 for emp_row in employee_data:
                     for enroll_row in enrollment_data:
-                        combined_data = {**company_data[0], **emp_row, **enroll_row, **contact_info}
+                        combined_data = {**company_data[0], **current_emp_data, **emp_row, **enroll_row, **contact_info}
                         rows.append(combined_data)
     return rows
 
