@@ -56,6 +56,8 @@ def process_company(company):
         'Department':'',
         'Division':'',
         'Office':'',
+        'PayrollGroup':'',
+        'Suffix':'',
         'TerminatedOn':'',
         'TerminationReason':''
     }
