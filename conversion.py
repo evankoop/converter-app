@@ -61,7 +61,7 @@ def process_company(company):
         'TerminatedOn':'',
         'TerminationReason':''
     }
-    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications', 'DependentEnrollees'})
+    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications', 'DependentEnrollees', 'Enrollee'})
 
     employees = company.findall('.//Employee')
 
@@ -81,7 +81,7 @@ def process_company(company):
                 rows.append({**company_data[0], **current_emp_data, **row, **contact_info})
         else:
             for enrollment in enrollments:
-                enrollment_data = extract_element_data(enrollment, excluded_tags={'Beneficiary'})
+                enrollment_data = extract_element_data(enrollment, excluded_tags={'Beneficiary', 'DependentEnrollees'})
 
                 for emp_row in employee_data:
                     for enroll_row in enrollment_data:
