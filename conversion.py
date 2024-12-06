@@ -61,7 +61,7 @@ def process_company(company):
         'TerminatedOn':'',
         'TerminationReason':''
     }
-    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications'})
+    company_data = extract_element_data(company, excluded_tags={'Beneficiary', 'Contacts', 'Classes', 'Departments', 'Divisions', 'Offices', 'BusinessUnits', 'PayrollGroups', 'Plans', 'JobClassifications', 'DependentEnrollees'})
 
     employees = company.findall('.//Employee')
 
