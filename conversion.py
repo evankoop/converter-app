@@ -109,7 +109,7 @@ def write_to_csv(data, csv_file):
 
     csv_file_path = os.path.splitext(csv_file)[0] + '.csv'
 
-    with open(csv_file_path, 'w', newline='') as csvfile:
+    with open(csv_file_path, 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=column_order)
         writer.writeheader()
         writer.writerows(data)
